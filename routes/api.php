@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\FakultasController;
 use App\Http\Controllers\Api\JurusanController;
+use App\Http\Controllers\Api\StreamingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,8 +33,9 @@ $router->get('/cek-user', [AuthController::class, 'decodetoken']);
 // $router->group(['prefix' => 'news'], function() use ($router) {
 //     $router->get('/', [NewsController::class, 'index']);
 // });
-Route::group(['prefix' => 'admin'], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['user']], function () {
     Route::resource('news', NewsController::class);
     Route::resource('fakultas', FakultasController::class);
     Route::resource('jurusan', JurusanController::class);
+    Route::resource('streaming', StreamingController::class);
 });
