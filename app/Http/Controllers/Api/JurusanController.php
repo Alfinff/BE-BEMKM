@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\JurusanService;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
 
 class JurusanController extends Controller
@@ -88,13 +89,13 @@ class JurusanController extends Controller
             else {
                 $validator = Validator::make($this->request->all(), [
                     'name' => 'required',
-                    'faculty_code' => 'required',
-                    'number_of_major' => 'required',
+                    'faculty_id' => 'required',
+                    'major_code' => 'required',
                 ]);
                 if ($validator->fails()) {
                     return response()->json($validator->messages());
                 } else {
-                    $result = $this->service->store($this->request);
+                    // $result = $this->service->store($this->request);
 
                     if (!$result) {
                         return response()->json([
@@ -204,13 +205,13 @@ class JurusanController extends Controller
             else {
                 $validator = Validator::make($this->request->all(), [
                     'name' => 'required',
-                    'faculty_code' => 'required',
-                    'number_of_major' => 'required',
+                    'faculty_id' => 'required',
+                    'major_code' => 'required',
                 ]);
                 if ($validator->fails()) {
                     return response()->json($validator->messages());
                 } else {
-                    $result = $this->service->update($this->request, $id);
+                    // $result = $this->service->update($this->request, $id);
 
                     if (!$result) {
                         return response()->json([
@@ -219,7 +220,7 @@ class JurusanController extends Controller
                             'code'    => 500,
                         ]);
                     } else {
-                        $result = $this->service->store($this->request);
+                        $result = $this->service->update($this->request, $id);
                         if (!$result) {
                             return response()->json([
                                 'success' => false,

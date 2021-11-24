@@ -27,7 +27,7 @@ class StreamingService
 
             DB::commit();
 
-	   		return true;
+	   		return $result;
 
         } catch (\Throwable $th) {
             DB::rollback();

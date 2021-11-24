@@ -96,7 +96,7 @@ class NewsController extends Controller
                 if ($validator->fails()) {
                     return response()->json($validator->messages());
                 } else {
-                    $result = $this->service->store($this->request);
+                    // $result = $this->service->store($this->request);
 
                     if (!$result) {
                         return response()->json([
@@ -204,16 +204,16 @@ class NewsController extends Controller
                 ]);
             }
             else {
-                $result = $this->service->update($this->request, $id);
-
-                    if (!$result) {
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Service Error',
-                            'code'    => 500,
-                        ]);
-                    } else {
-                        $result = $this->service->store($this->request);
+                
+                if (!$result) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Service Error',
+                        'code'    => 500,
+                    ]);
+                } else {
+                    $result = $this->service->update($this->request, $id);
+                    // $result = $this->service->store($this->request);
                         if (!$result) {
                             return response()->json([
                                 'success' => false,

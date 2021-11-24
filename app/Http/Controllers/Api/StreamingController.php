@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\StreamingService;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
 class StreamingController extends Controller
 {
@@ -202,16 +203,16 @@ class StreamingController extends Controller
                 ]);
             }
             else {
-                $result = $this->service->update($this->request, $id);
-
-                    if (!$result) {
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Service Error',
-                            'code'    => 500,
-                        ]);
-                    } else {
-                        $result = $this->service->store($this->request);
+                
+                if (!$result) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Service Error',
+                        'code'    => 500,
+                    ]);
+                } else {
+                    $result = $this->service->update($this->request, $id);
+                    // $result = $this->service->store($this->request);
                         if (!$result) {
                             return response()->json([
                                 'success' => false,

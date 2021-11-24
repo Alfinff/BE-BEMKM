@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\FakultasService;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
 class FakultasController extends Controller
 {
@@ -93,7 +94,7 @@ class FakultasController extends Controller
                 if ($validator->fails()) {
                     return response()->json($validator->messages());
                 } else {
-                    $result = $this->service->store($this->request);
+                    // $result = $this->service->store($this->request);
 
                     if (!$result) {
                         return response()->json([
@@ -201,39 +202,30 @@ class FakultasController extends Controller
                 ]);
             }
             else {
-                $validator = Validator::make($this->request->all(), [
-                    'name' => 'required',
-                    'faculty_code' => 'required',
-                    'number_of_major' => 'required',
-                ]);
-                if ($validator->fails()) {
-                    return response()->json($validator->messages());
+                
+                if (!$result) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Service Error',
+                        'code'    => 500,
+                    ]);
                 } else {
                     $result = $this->service->update($this->request, $id);
-
+                    // $result = $this->service->store($this->request);
                     if (!$result) {
                         return response()->json([
                             'success' => false,
                             'message' => 'Service Error',
                             'code'    => 500,
                         ]);
-                    } else {
-                        $result = $this->service->store($this->request);
-                        if (!$result) {
-                            return response()->json([
-                                'success' => false,
-                                'message' => 'Service Error',
-                                'code'    => 500,
-                            ]);
-                        }
-
-                        return response()->json([
-                            'success' => true,
-                            'message' => 'OK',
-                            'code'    => 200,
-                            'data'    => $result
-                        ]);
                     }
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'OK',
+                        'code'    => 200,
+                        'data'    => $result
+                    ]);
                 }
             }
         } catch (\Throwable $th) {

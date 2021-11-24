@@ -82,7 +82,7 @@ class JurusanService
 
             $result->update([
                 'faculty_id' => $request->faculty_id,
-                'name' => $request->name,
+                'name' => $request->name,   
                 'major_code' => $request->major_code,
             ]);
             return $result;

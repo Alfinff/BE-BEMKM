@@ -13,7 +13,7 @@ class FakultasService
         try {
             $decodeToken = parseJwt($request->header('Authorization'));
 
-            DB::beginTransaction();
+            // DB::beginTransaction();
 
             $uuid = generateUuid();
 
@@ -24,7 +24,7 @@ class FakultasService
                 'number_of_major' => $request->number_of_major,
             ]);
 
-            DB::commit();
+            // DB::commit();
 
 	   		return true;
 
