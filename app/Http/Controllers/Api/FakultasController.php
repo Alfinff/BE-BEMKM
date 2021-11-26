@@ -94,7 +94,7 @@ class FakultasController extends Controller
                 if ($validator->fails()) {
                     return response()->json($validator->messages());
                 } else {
-                    // $result = $this->service->store($this->request);
+                    $result = $this->service->store($this->request);
 
                     if (!$result) {
                         return response()->json([
@@ -103,15 +103,6 @@ class FakultasController extends Controller
                             'code'    => 500,
                         ]);
                     } else {
-                        $result = $this->service->store($this->request);
-                        if (!$result) {
-                            return response()->json([
-                                'success' => false,
-                                'message' => 'Service Error',
-                                'code'    => 500,
-                            ]);
-                        }
-
                         return response()->json([
                             'success' => true,
                             'message' => 'OK',
