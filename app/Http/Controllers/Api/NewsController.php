@@ -91,7 +91,6 @@ class NewsController extends Controller
                     'slug' => 'required',
                     'content' => 'required',
                     'status' => 'required',
-                    'picture' => 'required',
                 ]);
                 if ($validator->fails()) {
                     return response()->json($validator->messages());

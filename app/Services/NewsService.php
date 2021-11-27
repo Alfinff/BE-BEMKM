@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\News;
+use App\Models\NewsCategory;
+use App\Models\Master\Category;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -19,11 +21,19 @@ class NewsService
 
             $pic = '';
 
-            if ($request->image) {
+            if ($request->picture) {
                 $fotoName = "news/images/";
                 // $fotoPath = $fotoName.$request->foto;
-                uploadFile($request->image, $fotoName, "$uuid.png");
+                uploadFile($request->picture, $fotoName, "$uuid.png");
                 $pic = $fotoName."$uuid.png";
+            }
+
+            $kategori = Category::where('name', $request->kategori)->first();
+            if ($kategori === null){
+                $kategori = Category::create([
+                    'uuid' => generateUuid(),
+                    'name' => $request->kategori,
+                ]);
             }
 
             $result = News::create([
@@ -34,6 +44,12 @@ class NewsService
                 'status' => $request->status,
                 'picture' => $pic,
                 'user_id' => $decodeToken->user->uuid
+            ]);
+
+            NewsCategory::create([
+                'uuid' => generateUuid(),
+                'category_id' => $kategori->uuid,
+                'news_id' => $uuid
             ]);
 
             DB::commit();
@@ -52,6 +68,7 @@ class NewsService
             $result = News::when($request->title, function ($query) use ($request) {
     			$query->where('title', 'like', '%' . $request->title . '%');
     		})
+            ->with('author', 'newsCategory.category')
             ->orderBy('created_at', 'desc')
             ->paginate(25);
 
@@ -66,7 +83,7 @@ class NewsService
 
     public function getOne($id) {
         try {
-            $result = News::where('uuid', $id)->first();
+            $result = News::where('uuid', $id)->with('author', 'newsCategory.category')->first();
             return $result;
         }
         catch (\Throwable $th) {
@@ -78,7 +95,7 @@ class NewsService
 
     public function show($id) {
         try {
-            $result = News::where('uuid', $id)->first();
+            $result = News::where('uuid', $id)->with('author', 'newsCategory.category')->first();
             return $result;
         }
         catch (\Throwable $th) {
@@ -101,6 +118,14 @@ class NewsService
                 $pic = $fotoName."$uuid.png";
             }
 
+            $kategori = Category::where('name', $request->kategori)->first();
+            if ($kategori === null){
+                $kategori = Category::create([
+                    'uuid' => generateUuid(),
+                    'name' => $request->kategori,
+                ]);
+            }
+
             $result->update([
                 'title' => $request->title,
                 'slug' => $request->slug,
@@ -108,6 +133,15 @@ class NewsService
                 'status' => $request->status,
                 'picture' => $pic
             ]);
+
+            $deleted = NewsCategory::where('uuid', $id)->delete();
+            
+            NewsCategory::create([
+                'uuid' => generateUuid(),
+                'category_id' => $kategori->uuid,
+                'news_id' => $uuid
+            ]);
+
             return $result;
         }
         catch (\Throwable $th) {
