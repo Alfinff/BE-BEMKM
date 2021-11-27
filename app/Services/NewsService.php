@@ -81,6 +81,25 @@ class NewsService
         }
     }
 
+    public function getNew($request) {
+        try {
+            $result = News::when($request->title, function ($query) use ($request) {
+    			$query->where('title', 'like', '%' . $request->title . '%');
+    		})
+            ->with('author', 'newsCategory.category')
+            ->orderBy('created_at', 'desc')
+            ->limit(4)
+            ->get();
+
+            return $result;
+        }
+        catch (\Throwable $th) {
+            DB::rollback();
+            dd("Service error. " . $th->getMessage());
+            return false;
+        }
+    }
+
     public function getOne($id) {
         try {
             $result = News::where('uuid', $id)->with('author', 'newsCategory.category')->first();

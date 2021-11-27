@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\FakultasController;
 use App\Http\Controllers\Api\JurusanController;
 use App\Http\Controllers\Api\StreamingController;
+use App\Http\Controllers\Api\LandingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +24,7 @@ use App\Http\Controllers\Api\StreamingController;
 //     return $request->user();
 // });
 
-$router->get('/', function () use ($router) {
-    echo 'API Web BEM KM UPN YK';
-});
+$router->get('/', [LandingController::class, 'index']);
 
 $router->post('/login', [AuthController::class, 'authenticate']);
 $router->get('/cek-user', [AuthController::class, 'decodetoken']);
