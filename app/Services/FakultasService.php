@@ -52,7 +52,7 @@ class FakultasService
         }
     }
 
-    public function getOne($request) {
+    public function getOne($id) {
         try {
             $result = Fakultas::where('uuid', $id)->first();
             return $result;

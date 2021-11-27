@@ -40,6 +40,7 @@ class JurusanService
             $result = Jurusan::when($request->name, function ($query) use ($request) {
     			$query->where('name', 'like', '%' . $request->name . '%');
     		})
+            ->with('faculty')
             ->orderBy('created_at', 'desc')
             ->paginate(25);
 
@@ -54,7 +55,7 @@ class JurusanService
 
     public function getOne($request) {
         try {
-            $result = Jurusan::where('uuid', $id)->first();
+            $result = Jurusan::where('uuid', $id)->with('faculty')->first();
             return $result;
         }
         catch (\Throwable $th) {
@@ -66,7 +67,7 @@ class JurusanService
 
     public function show($id) {
         try {
-            $result = Jurusan::where('uuid', $id)->first();
+            $result = Jurusan::where('uuid', $id)->with('faculty')->first();
             return $result;
         }
         catch (\Throwable $th) {
