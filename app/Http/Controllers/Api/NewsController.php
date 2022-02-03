@@ -55,6 +55,52 @@ class NewsController extends Controller
         }
     }
 
+    public function getNewsTiga()
+    {
+        try
+        {
+            $result = $this->service->getNewsTiga($this->request);
+            if ($result->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data News Kosong!',
+                    'code'    => 404,
+                ]);
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'OK',
+                'code'    => 200,
+                'data'    => $result
+            ]);
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+        }
+    }
+
+    public function getNewsDelapan()
+    {
+        try
+        {
+            $result = $this->service->getNewsDelapan($this->request);
+            if ($result->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data News Kosong!',
+                    'code'    => 404,
+                ]);
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'OK',
+                'code'    => 200,
+                'data'    => $result
+            ]);
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -195,7 +241,7 @@ class NewsController extends Controller
                 ]);
             }
             else {
-                
+
                 if (!$result) {
                     return response()->json([
                         'success' => false,

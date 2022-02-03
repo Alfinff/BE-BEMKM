@@ -120,16 +120,23 @@ class VisiMisiController extends Controller
                 ]);
             }
             else {
-
-                if (!$result) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Service Error',
-                        'code'    => 500,
-                    ]);
+                $validator = Validator::make($this->request->all(), [
+                    'title' => 'required',
+                    'visi' => 'required',
+                    'misi' => 'required'
+                ]);
+                if ($validator->fails()) {
+                    return response()->json($validator->messages());
                 } else {
-                    $result = $this->service->update($this->request, $id);
-                    // $result = $this->service->store($this->request);
+                    $result = $this->service->cek($id);
+                    if (!$result) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Data Tidak Ditemukan',
+                            'code'    => 404,
+                        ]);
+                    } else {
+                        $result = $this->service->update($this->request, $id);
                         if (!$result) {
                             return response()->json([
                                 'success' => false,
@@ -145,6 +152,7 @@ class VisiMisiController extends Controller
                             'data'    => $result
                         ]);
                     }
+                }
             }
         } catch (\Throwable $th) {
             dd('Controller error ' . $th->getMessage());

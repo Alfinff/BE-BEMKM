@@ -17,7 +17,7 @@ class CreateVisiMisiTable extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->longText('visi')->nullable();
-            $table->string('misi')->nullable();
+            $table->longText('misi')->nullable();
             $table->string('picture')->nullable();
             $table->string('user_id')->nullable();
             $table->timestamps();

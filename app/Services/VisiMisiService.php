@@ -10,6 +10,18 @@ use Illuminate\Support\Facades\Hash;
 class VisiMisiService
 {
 
+    public function cek($id) {
+        try {
+            $result = VisiMisi::where('id', $id)->first();
+            return $result;
+        }
+        catch (\Throwable $th) {
+            DB::rollback();
+            dd("Service error. " . $th->getMessage());
+            return false;
+        }
+    }
+
     public function getOne() {
         try {
             $result = VisiMisi::with('author')->first();
@@ -24,21 +36,21 @@ class VisiMisiService
 
     public function update($request, $id) {
         try {
-            $result = VisiMisi::where('uuid', $id)->first();
+            $result = VisiMisi::where('id', $id)->first();
 
             $pic = $result->picture;
 
             if ($request->image) {
                 $fotoName = "VisiMisi/images/";
                 // $fotoPath = $fotoName.$request->foto;
-                uploadFile($request->image, $fotoName, "$uuid.png");
-                $pic = $fotoName."$uuid.png";
+                uploadFile($request->image, $fotoName, "$id.png");
+                $pic = $fotoName."$id.png";
             }
 
             $result->update([
                 'title' => $request->title,
-                'visi' => $request->slug,
-                'misi' => $request->content,
+                'visi' => $request->visi,
+                'misi' => $request->misi,
                 'picture' => $pic
             ]);
 
