@@ -11,7 +11,9 @@ class CarierCenter extends Model
     use HasFactory;
 
     protected $table = 'carier_center';
-
+    protected $appends = [
+        'picture_formated'
+    ];
     protected $fillable = [
         'uuid',
         'title',

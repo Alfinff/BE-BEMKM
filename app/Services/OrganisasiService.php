@@ -9,6 +9,18 @@ use Illuminate\Support\Facades\Hash;
 
 class OrganisasiService
 {
+    public function getAllOrganisasi() {
+        try {
+            $result = Organisasi::with('author')->limit(10)->get();
+            return $result;
+        }
+        catch (\Throwable $th) {
+            DB::rollback();
+            dd("Service error. " . $th->getMessage());
+            return false;
+        }
+    }
+
     public function store($request) {
         try {
             $decodeToken = parseJwt($request->header('Authorization'));

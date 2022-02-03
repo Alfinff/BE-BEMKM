@@ -32,7 +32,8 @@ use App\Http\Controllers\Api\LandingController;
 // });
 
 $router->get('/landing', [LandingController::class, 'index']);
-
+Route::get('/strukturorganisasi', [StrukturOrganisasiController::class, 'getStruktur']);
+Route::get('/organisasi', [OrganisasiController::class, 'getOrganisasi']);
 $router->post('/login', [AuthController::class, 'authenticate']);
 $router->get('/cek-user', [AuthController::class, 'decodetoken']);
 

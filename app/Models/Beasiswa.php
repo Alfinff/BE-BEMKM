@@ -11,7 +11,9 @@ class Beasiswa extends Model
     use HasFactory;
 
     protected $table = 'beasiswa';
-
+    protected $appends = [
+        'picture_formated'
+    ];
     protected $fillable = [
         'uuid',
         'title',

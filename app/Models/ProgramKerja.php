@@ -11,7 +11,9 @@ class ProgramKerja extends Model
     use HasFactory;
 
     protected $table = 'program_kerja';
-
+    protected $appends = [
+        'picture_formated'
+    ];
     protected $fillable = [
         'uuid',
         'title',

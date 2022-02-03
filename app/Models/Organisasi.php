@@ -11,7 +11,9 @@ class Organisasi extends Model
     use HasFactory;
 
     protected $table = 'organisasi';
-
+    protected $appends = [
+        'picture_formated'
+    ];
     protected $fillable = [
         'uuid',
         'title',

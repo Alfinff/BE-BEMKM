@@ -64,6 +64,24 @@ class FakultasService
         }
     }
 
+    public function getNew($request) {
+        try {
+            $result = Fakultas::when($request->title, function ($query) use ($request) {
+    			$query->where('title', 'like', '%' . $request->title . '%');
+    		})
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get();
+
+            return $result;
+        }
+        catch (\Throwable $th) {
+            DB::rollback();
+            dd("Service error. " . $th->getMessage());
+            return false;
+        }
+    }
+
     public function show($id) {
         try {
             $result = Fakultas::where('uuid', $id)->first();

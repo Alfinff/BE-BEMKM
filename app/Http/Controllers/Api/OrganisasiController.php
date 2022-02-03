@@ -120,6 +120,29 @@ class OrganisasiController extends Controller
 		}
     }
 
+    public function getOrganisasi()
+    {
+        try
+        {
+            $result = $this->service->getAllOrganisasi();
+            if (!$result) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data Organisasi Kosong!',
+                    'code'    => 404,
+                ]);
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'OK',
+                'code'    => 200,
+                'data'    => $result
+            ]);
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+        }
+    }
+
     /**
      * Display the specified resource.
      *

@@ -45,6 +45,29 @@ class StrukturOrganisasiController extends Controller
         //
     }
 
+    public function getStruktur()
+    {
+        try
+        {
+            $result = $this->service->getOne();
+            if (!$result) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data Struktur Organisasi Kosong!',
+                    'code'    => 404,
+                ]);
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'OK',
+                'code'    => 200,
+                'data'    => $result
+            ]);
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+        }
+    }
+
     /**
      * Display the specified resource.
      *

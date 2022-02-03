@@ -11,7 +11,9 @@ class KaryaUPN extends Model
     use HasFactory;
 
     protected $table = 'karya_upn';
-
+    protected $appends = [
+        'picture_formated'
+    ];
     protected $fillable = [
         'uuid',
         'title',

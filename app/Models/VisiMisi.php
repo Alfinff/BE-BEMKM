@@ -13,7 +13,9 @@ class VisiMisi extends Model
     use HasFactory;
 
     protected $table = 'visi_misi';
-
+    protected $appends = [
+        'picture_formated'
+    ];
     protected $fillable = [
         'title',
         'visi',
@@ -22,16 +24,13 @@ class VisiMisi extends Model
         'user_id'
     ];
 
-    public function getPictureAttribute($value)
+    public function getPictureFormatedAttribute()
     {
-        if ($value == '') {
-            // return Storage::disk('s3')->temporaryUrl("images/avatar-mahasiswa.svg", Carbon::now()->addMinutes(5));
-            return '';
-        } else {
-            return Storage::disk('s3')->temporaryUrl($value, Carbon::now()->addMinutes(5));
+        if ($this->attributes['picture']) {
+            return showFile($this->attributes['picture']);
         }
 
-        return $value;
+        return '';
     }
 
     public function author()

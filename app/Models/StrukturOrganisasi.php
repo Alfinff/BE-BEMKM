@@ -11,7 +11,9 @@ class StrukturOrganisasi extends Model
     use HasFactory;
 
     protected $table = 'struktur_organisasi';
-
+    protected $appends = [
+        'picture_formated'
+    ];
     protected $fillable = [
         'title',
         'picture',
