@@ -16,7 +16,6 @@ class AuthController extends Controller
 
     public function authenticate(User $user)
     {
-
         $validator = Validator::make($this->request->all(), [
             'email' => 'required',
             'password' => 'required'
@@ -69,7 +68,12 @@ class AuthController extends Controller
         try {
             $decodeToken = parseJwt($this->request->header('Authorization'));
 
-            return json_encode($decodeToken->user);
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Token',
+                'code'    => 200,
+                'data'    => $decodeToken->user
+            ]);
         } catch (\Throwable $th) {
             return writeLog($th->getMessage());
         }

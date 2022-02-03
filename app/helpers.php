@@ -7,16 +7,33 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
 function writeLog($message)
 {
 	try {
 		\Log::error($message);
-	    return response()->json([
-	    	'success' => false,
-	    	'message' => env('APP_DEBUG') ? $message : 'Terjadi kesalahan',
-	    	'code'    => 500,
-	    ]);
+		return response()->json([
+			'success' => false,
+			'message' => env('APP_DEBUG') ? $message : 'Terjadi kesalahan',
+			'code'    => 500,
+		]);
+	} catch (Exception $e) {
+		return false;
+	}
+}
+
+function writeLogValidation($message)
+{
+	try {
+		\Log::error($message);
+		return response()->json([
+            'success' => false,
+            'message' => 'Validasi gagal',
+			// 'message' => $message,
+            'code'    => 422,
+        ]);
 	} catch (Exception $e) {
 		return false;
 	}
@@ -34,7 +51,7 @@ function generateUuid()
 function uploadFile($file, $path, $filename)
 {
 	Storage::disk('s3')->putFileAs($path, $file, $filename, [
-	    'visibility' => 'public',
+		'visibility' => 'public',
 	]);
 
 	return true;
@@ -66,7 +83,7 @@ function generateJwt(User $user)
 {
 	try {
 		$key = '';
-	    $key  = str_shuffle('QWERTYUIOPASDFGHJKLZXCVBNM1234567890');
+		$key  = str_shuffle('QWERTYUIOPASDFGHJKLZXCVBNM1234567890');
 
 		$dataUser = [];
 		$dataUser = [
@@ -77,15 +94,15 @@ function generateJwt(User $user)
 		];
 
 		$payload = [];
-	    $payload = [
+		$payload = [
 			'iss'  => 'lumen-jwt',
 			'iat'  => time(),
 			'exp'  => time() + 60 * 60 * 24,
 			'key'  => $key,
 			'user' => $dataUser,
-	    ];
+		];
 
-	    return JWT::encode($payload, env('JWT_SECRET'));
+		return JWT::encode($payload, env('JWT_SECRET'));
 	} catch (Exception $e) {
 		return writeLog($e->getMessage());
 	}
