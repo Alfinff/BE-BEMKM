@@ -8,6 +8,7 @@ use App\Models\Master\Category;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use GrahamCampbell\Flysystem\Facades\Flysystem;
 
 class NewsService
 {
@@ -19,16 +20,15 @@ class NewsService
 
             $uuid = generateUuid();
 
-            $pic = '';
+            $pathfoto = '';
 
-            if ($request->picture) {
-                $fotoName = "news/images/";
-                // $fotoPath = $fotoName.$request->foto;
-                uploadFile($request->picture, $fotoName, "$uuid.png");
-                $pic = $fotoName."$uuid.png";
+            if ($request->images) {
+                $foto     = base64_decode($request->images);
+                $pathfoto = "news/images/". $uuid . '.png';
+                $upload   = Flysystem::connection('awss3')->put($pathfoto, $foto);
             }
 
-            $kategori = Category::where('name', $request->kategori)->first();
+            $kategori = Category::where('name', 'LIKE', '%'.$request->kategori.'%')->first();
             if ($kategori === null){
                 $kategori = Category::create([
                     'uuid' => generateUuid(),
@@ -42,7 +42,7 @@ class NewsService
                 'slug' => $request->slug,
                 'content' => $request->content,
                 'status' => $request->status,
-                'picture' => $pic,
+                'picture' => $pathfoto,
                 'user_id' => $decodeToken->user->uuid
             ]);
 
@@ -183,16 +183,14 @@ class NewsService
         try {
             $result = News::where('uuid', $id)->first();
 
-            $pic = $result->picture;
+            $pathfoto = $result->picture;
 
-            if ($request->image) {
-                $fotoName = "news/images/";
-                // $fotoPath = $fotoName.$request->foto;
-                uploadFile($request->image, $fotoName, "$uuid.png");
-                $pic = $fotoName."$uuid.png";
+            if ($request->images) {
+                $foto     = base64_decode($request->images);
+                $pathfoto = "news/images/". $id . '.png';
+                $upload   = Flysystem::connection('awss3')->put($pathfoto, $foto);
             }
-
-            $kategori = Category::where('name', $request->kategori)->first();
+            $kategori = Category::where('name', 'LIKE', '%'.$request->kategori.'%')->first();
             if ($kategori === null){
                 $kategori = Category::create([
                     'uuid' => generateUuid(),
@@ -205,7 +203,7 @@ class NewsService
                 'slug' => $request->slug,
                 'content' => $request->content,
                 'status' => $request->status,
-                'picture' => $pic
+                'picture' => $pathfoto
             ]);
 
             $deleted = NewsCategory::where('uuid', $id)->delete();
@@ -213,7 +211,7 @@ class NewsService
             NewsCategory::create([
                 'uuid' => generateUuid(),
                 'category_id' => $kategori->uuid,
-                'news_id' => $uuid
+                'news_id' => $id
             ]);
 
             return $result;

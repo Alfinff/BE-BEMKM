@@ -39,13 +39,13 @@ class NewsController extends Controller
                 if ($result->isEmpty()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Data News Kosong!',
+                        'message' => 'Data Berita Kosong!',
                         'code'    => 404,
                     ]);
                 }
                 return response()->json([
                     'success' => true,
-                    'message' => 'OK',
+                    'message' => 'Berhasil',
                     'code'    => 200,
                     'data'    => $result
                 ]);
@@ -63,13 +63,13 @@ class NewsController extends Controller
             if ($result->isEmpty()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Data News Kosong!',
+                    'message' => 'Data Berita Kosong!',
                     'code'    => 404,
                 ]);
             }
             return response()->json([
                 'success' => true,
-                'message' => 'OK',
+                'message' => 'Berhasil',
                 'code'    => 200,
                 'data'    => $result
             ]);
@@ -86,13 +86,13 @@ class NewsController extends Controller
             if ($result->isEmpty()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Data News Kosong!',
+                    'message' => 'Data Berita Kosong!',
                     'code'    => 404,
                 ]);
             }
             return response()->json([
                 'success' => true,
-                'message' => 'OK',
+                'message' => 'Berhasil',
                 'code'    => 200,
                 'data'    => $result
             ]);
@@ -153,7 +153,7 @@ class NewsController extends Controller
 
                         return response()->json([
                             'success' => true,
-                            'message' => 'OK',
+                            'message' => 'Berhasil',
                             'code'    => 200,
                             'data'    => $result
                         ]);
@@ -192,13 +192,13 @@ class NewsController extends Controller
                 if (!$result) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Data News Kosong!',
+                        'message' => 'Data Berita Kosong!',
                         'code'    => 404,
                     ]);
                 }
                 return response()->json([
                     'success' => true,
-                    'message' => 'OK',
+                    'message' => 'Berhasil',
                     'code'    => 200,
                     'data'    => $result
                 ]);
@@ -241,31 +241,30 @@ class NewsController extends Controller
                 ]);
             }
             else {
-
+                $result = $this->service->getOne($id);
                 if (!$result) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Service Error',
-                        'code'    => 500,
+                        'message' => 'Data Berita Tidak Ditemukan!',
+                        'code'    => 404,
                     ]);
                 } else {
                     $result = $this->service->update($this->request, $id);
-                    // $result = $this->service->store($this->request);
-                        if (!$result) {
-                            return response()->json([
-                                'success' => false,
-                                'message' => 'Service Error',
-                                'code'    => 500,
-                            ]);
-                        }
-
+                    if (!$result) {
                         return response()->json([
-                            'success' => true,
-                            'message' => 'OK',
-                            'code'    => 200,
-                            'data'    => $result
+                            'success' => false,
+                            'message' => 'Service Error',
+                            'code'    => 500,
                         ]);
                     }
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Berhasil',
+                        'code'    => 200,
+                        'data'    => $result
+                    ]);
+                }
             }
         } catch (\Throwable $th) {
             dd('Controller error ' . $th->getMessage());
@@ -295,11 +294,20 @@ class NewsController extends Controller
                 ]);
             }
             else {
+                $result = $this->service->getOne($id);
+                if (!$result) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Data Berita Tidak Ditemukan!',
+                        'code'    => 404,
+                    ]);
+                }
+
                 $result = $this->service->delete($id);
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'OK',
+                    'message' => 'Berhasil',
                     'code'    => 200,
                 ]);
             }

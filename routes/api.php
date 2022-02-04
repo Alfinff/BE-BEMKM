@@ -52,7 +52,7 @@ use App\Http\Controllers\Api\LandingController;
         });
         Route::group(['prefix' => 'strukturorganisasi'], function ($router) {
             Route::get('/', [StrukturOrganisasiController::class, 'show']);
-            Route::put('/update/{id}', [StrukturOrganisasiController::class, 'update']);
+            Route::post('/update/{id}', [StrukturOrganisasiController::class, 'update']);
         });
         Route::resource('programkerja', ProgramKerjaController::class);
         Route::resource('organisasi', OrganisasiController::class);

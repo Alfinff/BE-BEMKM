@@ -6,6 +6,7 @@ use App\Models\VisiMisi;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use GrahamCampbell\Flysystem\Facades\Flysystem;
 
 class VisiMisiService
 {
@@ -38,20 +39,19 @@ class VisiMisiService
         try {
             $result = VisiMisi::where('id', $id)->first();
 
-            $pic = $result->picture;
+            $pathfoto = $result->picture;
 
             if ($request->image) {
-                $fotoName = "VisiMisi/images/";
-                // $fotoPath = $fotoName.$request->foto;
-                uploadFile($request->image, $fotoName, "$id.png");
-                $pic = $fotoName."$id.png";
+                $foto     = base64_decode($request->image);
+                $pathfoto = "VisiMisi/images/". date('YmdHis') . '.png';
+                $upload   = Flysystem::connection('awss3')->put($pathfoto, $foto);
             }
 
             $result->update([
                 'title' => $request->title,
                 'visi' => $request->visi,
                 'misi' => $request->misi,
-                'picture' => $pic
+                'picture' => $pathfoto
             ]);
 
             return $result;

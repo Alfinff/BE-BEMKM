@@ -45,7 +45,7 @@ class ProgramKerjaController extends Controller
                 }
                 return response()->json([
                     'success' => true,
-                    'message' => 'OK',
+                    'message' => 'Berhasil',
                     'code'    => 200,
                     'data'    => $result
                 ]);
@@ -87,10 +87,7 @@ class ProgramKerjaController extends Controller
             }
             else {
                 $validator = Validator::make($this->request->all(), [
-                    'title' => 'required',
-                    'slug' => 'required',
-                    'content' => 'required',
-                    'status' => 'required',
+                    'title' => 'required'
                 ]);
                 if ($validator->fails()) {
                     return response()->json($validator->messages());
@@ -107,7 +104,7 @@ class ProgramKerjaController extends Controller
 
                         return response()->json([
                             'success' => true,
-                            'message' => 'OK',
+                            'message' => 'Tambah Berhasil',
                             'code'    => 200,
                             'data'    => $result
                         ]);
@@ -152,7 +149,7 @@ class ProgramKerjaController extends Controller
                 }
                 return response()->json([
                     'success' => true,
-                    'message' => 'OK',
+                    'message' => 'Berhasil',
                     'code'    => 200,
                     'data'    => $result
                 ]);
@@ -195,16 +192,15 @@ class ProgramKerjaController extends Controller
                 ]);
             }
             else {
-
+                $result = $this->service->getOne($id);
                 if (!$result) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Service Error',
-                        'code'    => 500,
+                        'message' => 'Data Program Kerja Tidak Ditemukan!',
+                        'code'    => 404,
                     ]);
                 } else {
                     $result = $this->service->update($this->request, $id);
-                    // $result = $this->service->store($this->request);
                         if (!$result) {
                             return response()->json([
                                 'success' => false,
@@ -215,7 +211,7 @@ class ProgramKerjaController extends Controller
 
                         return response()->json([
                             'success' => true,
-                            'message' => 'OK',
+                            'message' => 'Berhasil',
                             'code'    => 200,
                             'data'    => $result
                         ]);
@@ -249,11 +245,20 @@ class ProgramKerjaController extends Controller
                 ]);
             }
             else {
+                $result = $this->service->getOne($id);
+                if (!$result) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Data Program Kerja Tidak Ditemukan!',
+                        'code'    => 404,
+                    ]);
+                }
+
                 $result = $this->service->delete($id);
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'OK',
+                    'message' => 'Berhasil',
                     'code'    => 200,
                 ]);
             }
