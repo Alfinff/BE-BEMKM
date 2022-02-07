@@ -6,6 +6,7 @@ use App\Models\CarierCenter;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use GrahamCampbell\Flysystem\Facades\Flysystem;
 
 class CarierCenterService
 {
@@ -17,20 +18,19 @@ class CarierCenterService
 
             $uuid = generateUuid();
 
-            $pic = '';
+            $pathfoto = '';
 
-            if ($request->picture) {
-                $fotoName = "CarierCenter/images/";
-                // $fotoPath = $fotoName.$request->foto;
-                uploadFile($request->picture, $fotoName, "$uuid.png");
-                $pic = $fotoName."$uuid.png";
+            if ($request->images) {
+                $foto     = base64_decode($request->images);
+                $pathfoto = "CarierCenter/images/". $uuid . '.png';
+                $upload   = Flysystem::connection('awss3')->put($pathfoto, $foto);
             }
 
             $result = CarierCenter::create([
                 'uuid' => $uuid,
                 'title' => $request->title,
                 'content' => $request->content,
-                'picture' => $pic,
+                'picture' => $pathfoto,
                 'user_id' => $decodeToken->user->uuid
             ]);
 
@@ -110,21 +110,19 @@ class CarierCenterService
         try {
             $result = CarierCenter::where('uuid', $id)->first();
 
-            $pic = $result->picture;
+            $pathfoto = $result->picture;
 
-            if ($request->image) {
-                $fotoName = "CarierCenter/images/";
-                // $fotoPath = $fotoName.$request->foto;
-                uploadFile($request->image, $fotoName, "$uuid.png");
-                $pic = $fotoName."$uuid.png";
+            if ($request->images) {
+                $foto     = base64_decode($request->images);
+                $pathfoto = "CarierCenter/images/". $id . '.png';
+                $upload   = Flysystem::connection('awss3')->put($pathfoto, $foto);
             }
 
             $result->update([
                 'title' => $request->title,
-                'slug' => $request->slug,
                 'content' => $request->content,
                 'status' => $request->status,
-                'picture' => $pic
+                'picture' => $pathfoto
             ]);
 
             return $result;

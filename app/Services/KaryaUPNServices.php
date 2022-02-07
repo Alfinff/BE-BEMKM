@@ -6,6 +6,7 @@ use App\Models\KaryaUPN;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use GrahamCampbell\Flysystem\Facades\Flysystem;
 
 class KaryaUPNServices
 {
@@ -17,20 +18,19 @@ class KaryaUPNServices
 
             $uuid = generateUuid();
 
-            $pic = '';
+            $pathfoto = '';
 
-            if ($request->picture) {
-                $fotoName = "karyaUPN/images/";
-                // $fotoPath = $fotoName.$request->foto;
-                uploadFile($request->picture, $fotoName, "$uuid.png");
-                $pic = $fotoName."$uuid.png";
+            if ($request->images) {
+                $foto     = base64_decode($request->images);
+                $pathfoto = "karyaUPN/images/". $uuid . '.png';
+                $upload   = Flysystem::connection('awss3')->put($pathfoto, $foto);
             }
 
             $result = KaryaUPN::create([
                 'uuid' => $uuid,
                 'title' => $request->title,
                 'content' => $request->content,
-                'picture' => $pic,
+                'picture' => $pathfoto,
                 'user_id' => $decodeToken->user->uuid
             ]);
 
@@ -110,21 +110,18 @@ class KaryaUPNServices
         try {
             $result = KaryaUPN::where('uuid', $id)->first();
 
-            $pic = $result->picture;
+            $pathfoto = $result->picture;
 
-            if ($request->image) {
-                $fotoName = "karyaUPN/images/";
-                // $fotoPath = $fotoName.$request->foto;
-                uploadFile($request->image, $fotoName, "$uuid.png");
-                $pic = $fotoName."$uuid.png";
+            if ($request->images) {
+                $foto     = base64_decode($request->images);
+                $pathfoto = "karyaUPN/images/". $id . '.png';
+                $upload   = Flysystem::connection('awss3')->put($pathfoto, $foto);
             }
 
             $result->update([
                 'title' => $request->title,
-                'slug' => $request->slug,
                 'content' => $request->content,
-                'status' => $request->status,
-                'picture' => $pic
+                'picture' => $pathfoto
             ]);
 
             return $result;

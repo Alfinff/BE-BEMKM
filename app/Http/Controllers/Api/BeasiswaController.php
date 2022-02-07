@@ -45,7 +45,7 @@ class BeasiswaController extends Controller
                 }
                 return response()->json([
                     'success' => true,
-                    'message' => 'OK',
+                    'message' => 'Berhasil',
                     'code'    => 200,
                     'data'    => $result
                 ]);
@@ -105,7 +105,7 @@ class BeasiswaController extends Controller
 
                         return response()->json([
                             'success' => true,
-                            'message' => 'OK',
+                            'message' => 'Berhasil',
                             'code'    => 200,
                             'data'    => $result
                         ]);
@@ -150,7 +150,7 @@ class BeasiswaController extends Controller
                 }
                 return response()->json([
                     'success' => true,
-                    'message' => 'OK',
+                    'message' => 'Berhasil',
                     'code'    => 200,
                     'data'    => $result
                 ]);
@@ -193,31 +193,30 @@ class BeasiswaController extends Controller
                 ]);
             }
             else {
-
+                $result = $this->service->getOne($id);
                 if (!$result) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Service Error',
+                        'message' => 'Data Beasiswa Tidak Ditemukan!',
                         'code'    => 500,
                     ]);
                 } else {
                     $result = $this->service->update($this->request, $id);
-                    // $result = $this->service->store($this->request);
-                        if (!$result) {
-                            return response()->json([
-                                'success' => false,
-                                'message' => 'Service Error',
-                                'code'    => 500,
-                            ]);
-                        }
-
+                    if (!$result) {
                         return response()->json([
-                            'success' => true,
-                            'message' => 'OK',
-                            'code'    => 200,
-                            'data'    => $result
+                            'success' => false,
+                            'message' => 'Service Error',
+                            'code'    => 500,
                         ]);
                     }
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Berhasil',
+                        'code'    => 200,
+                        'data'    => $result
+                    ]);
+                }
             }
         } catch (\Throwable $th) {
             dd('Controller error ' . $th->getMessage());
@@ -247,11 +246,20 @@ class BeasiswaController extends Controller
                 ]);
             }
             else {
+                $result = $this->service->getOne($id);
+                if (!$result) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Data Beasiswa Tidak Ditemukan!',
+                        'code'    => 404,
+                    ]);
+                }
+
                 $result = $this->service->delete($id);
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'OK',
+                    'message' => 'Berhasil',
                     'code'    => 200,
                 ]);
             }

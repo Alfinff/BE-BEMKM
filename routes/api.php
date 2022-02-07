@@ -59,7 +59,7 @@ use App\Http\Controllers\Api\LandingController;
 
         // publikasi
         Route::resource('berita', NewsController::class);
-        Route::resource('karyaUPN', KaryaUPNController::class);
+        Route::resource('karyaupn', KaryaUPNController::class);
 
         // informasi
         Route::resource('cariercenter', CarierCenterController::class);
