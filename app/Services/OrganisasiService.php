@@ -12,7 +12,9 @@ class OrganisasiService
 {
     public function getAllOrganisasi() {
         try {
-            $result = Organisasi::with('author')->limit(10)->get();
+            $result = Organisasi::with('author')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);;
             return $result;
         }
         catch (\Throwable $th) {

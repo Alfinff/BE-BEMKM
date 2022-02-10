@@ -10,6 +10,20 @@ use GrahamCampbell\Flysystem\Facades\Flysystem;
 
 class CarierCenterService
 {
+    public function getAllCarierCenter() {
+        try {
+            $result = CarierCenter::with('author')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);;
+            return $result;
+        }
+        catch (\Throwable $th) {
+            DB::rollback();
+            dd("Service error. " . $th->getMessage());
+            return false;
+        }
+    }
+
     public function store($request) {
         try {
             $decodeToken = parseJwt($request->header('Authorization'));

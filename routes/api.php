@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\KaryaUPNController;
 use App\Http\Controllers\Api\CarierCenterController;
 use App\Http\Controllers\Api\BeasiswaController;
+use App\Http\Controllers\Api\NamaLogoController;
+use App\Http\Controllers\Api\FooterController;
 use App\Http\Controllers\Api\FakultasController;
 use App\Http\Controllers\Api\JurusanController;
 use App\Http\Controllers\Api\StreamingController;
@@ -31,42 +33,75 @@ use App\Http\Controllers\Api\LandingController;
 //     return $request->user();
 // });
 
-// Route::middleware(['cors'])->group(function () {
-    Route::get('/landing', [LandingController::class, 'index']);
-    Route::get('/strukturorganisasi', [StrukturOrganisasiController::class, 'getStruktur']);
-    Route::get('/organisasi', [OrganisasiController::class, 'getOrganisasid']);
-    Route::get('/beritautama', [NewsController::class, 'getNewsTiga']);
-    Route::get('/beritaall', [NewsController::class, 'getNewsDelapan']);
-    Route::get('/cek-user', [AuthController::class, 'decodetoken']);
+Route::get('/landing', [LandingController::class, 'index']);
+Route::get('/strukturorganisasi', [StrukturOrganisasiController::class, 'getStruktur']);
+Route::get('/namalogo', [NamaLogoController::class, 'getNamaLogo']);
+Route::get('/footer', [FooterController::class, 'getFooter']);
 
-    Route::post('/login', [AuthController::class, 'authenticate']);
+Route::group(['prefix' => 'programkerja'], function () {
+    Route::get('/', [ProgramKerjaController::class, 'getProgramKerja']);
+    Route::get('/{id}', [ProgramKerjaController::class, 'getOne']);
+});
+Route::group(['prefix' => 'organisasi'], function () {
+    Route::get('/', [OrganisasiController::class, 'getOrganisasi']);
+    Route::get('/{id}', [OrganisasiController::class, 'getOne']);
+});
+Route::group(['prefix' => 'karyaupn'], function () {
+    Route::get('/', [KaryaUPNController::class, 'getKaryaUPN']);
+    Route::get('/{id}', [KaryaUPNController::class, 'getOne']);
+});
+Route::group(['prefix' => 'cariercenter'], function () {
+    Route::get('/', [CarierCenterController::class, 'getCarierCenter']);
+    Route::get('/{id}', [CarierCenterController::class, 'getOne']);
+});
+Route::group(['prefix' => 'beasiswa'], function () {
+    Route::get('/', [BeasiswaController::class, 'getBeasiswa']);
+    Route::get('/{id}', [BeasiswaController::class, 'getOne']);
+});
 
-    // $router->group(['prefix' => 'news'], function() use ($router) {
-    //     $router->get('/', [NewsController::class, 'index']);
-    // });
-    Route::group(['prefix' => 'admin', 'middleware' => ['user']], function () {
-        // profil
-        Route::group(['prefix' => 'visimisi'], function ($router) {
-            Route::get('/', [VisiMisiController::class, 'show']);
-            Route::post('/update/{id}', [VisiMisiController::class, 'update']);
-        });
-        Route::group(['prefix' => 'strukturorganisasi'], function ($router) {
-            Route::get('/', [StrukturOrganisasiController::class, 'show']);
-            Route::post('/update/{id}', [StrukturOrganisasiController::class, 'update']);
-        });
-        Route::resource('programkerja', ProgramKerjaController::class);
-        Route::resource('organisasi', OrganisasiController::class);
+// berita
+Route::get('/beritautama', [NewsController::class, 'getNewsTiga']);
+Route::get('/beritaall', [NewsController::class, 'getNewsDelapan']);
+Route::get('/berita/{id}', [NewsController::class, 'getOne']);
 
-        // publikasi
-        Route::resource('berita', NewsController::class);
-        Route::resource('karyaupn', KaryaUPNController::class);
+Route::get('/cek-user', [AuthController::class, 'decodetoken']);
+Route::post('/login', [AuthController::class, 'authenticate']);
 
-        // informasi
-        Route::resource('cariercenter', CarierCenterController::class);
-        Route::resource('beasiswa', BeasiswaController::class);
-
-        Route::resource('fakultas', FakultasController::class);
-        Route::resource('jurusan', JurusanController::class);
-        Route::resource('streaming', StreamingController::class);
-    });
+// $router->group(['prefix' => 'news'], function() use ($router) {
+//     $router->get('/', [NewsController::class, 'index']);
 // });
+Route::group(['prefix' => 'admin', 'middleware' => ['user']], function () {
+    // profil
+    Route::group(['prefix' => 'visimisi'], function () {
+        Route::get('/', [VisiMisiController::class, 'show']);
+        Route::post('/update/{id}', [VisiMisiController::class, 'update']);
+    });
+    Route::group(['prefix' => 'strukturorganisasi'], function () {
+        Route::get('/', [StrukturOrganisasiController::class, 'show']);
+        Route::post('/update/{id}', [StrukturOrganisasiController::class, 'update']);
+    });
+    Route::resource('programkerja', ProgramKerjaController::class);
+    Route::resource('organisasi', OrganisasiController::class);
+
+    // publikasi
+    Route::resource('berita', NewsController::class);
+    Route::resource('karyaupn', KaryaUPNController::class);
+
+    // informasi
+    Route::resource('cariercenter', CarierCenterController::class);
+    Route::resource('beasiswa', BeasiswaController::class);
+
+    // setting
+    Route::group(['prefix' => 'namalogo'], function ($router) {
+        Route::get('/', [NamaLogoController::class, 'show']);
+        Route::post('/update/{id}', [NamaLogoController::class, 'update']);
+    });
+    Route::group(['prefix' => 'footer'], function ($router) {
+        Route::get('/', [FooterController::class, 'show']);
+        Route::post('/update/{id}', [FooterController::class, 'update']);
+    });
+
+    Route::resource('fakultas', FakultasController::class);
+    Route::resource('jurusan', JurusanController::class);
+    Route::resource('streaming', StreamingController::class);
+});
